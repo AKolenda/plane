@@ -4,8 +4,10 @@
 
 import json
 from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytest
+from django.db import transaction
 
 from plane.db.models import (
     GithubPullRequest,
@@ -16,6 +18,7 @@ from plane.db.models import (
     State,
     User,
 )
+from plane.integrations.github.bot import get_github_bot_user
 from plane.integrations.github.pull_requests import process_pull_request_event
 from plane.integrations.github.status import (
     branch_matches,
@@ -259,3 +262,20 @@ class TestPullRequestStateUpdates:
         )
         assert result["moved"] == []
         background_tasks["activity"].assert_not_called()
+
+
+@pytest.mark.unit
+@pytest.mark.django_db
+class TestGithubBotUser:
+    def test_losing_the_creation_race_keeps_the_callers_transaction_usable(self, workspace):
+        existing = get_github_bot_user(workspace.id)
+
+        with transaction.atomic():
+            # The race: the lookup misses, then the insert collides with the row another worker wrote
+            with patch("plane.integrations.github.bot.User.objects.filter") as lookup:
+                lookup.return_value.first.return_value = None
+                bot = get_github_bot_user(workspace.id)
+            # Without a savepoint around the insert, this query fails on the broken transaction
+            assert User.objects.filter(pk=bot.pk, is_bot=True).exists()
+
+        assert bot.pk == existing.pk
