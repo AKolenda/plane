@@ -7,9 +7,11 @@
 import React from "react";
 import { observer } from "mobx-react";
 // plane imports
+import { EIssueServiceType } from "@plane/types";
 import type { TIssueServiceType, TWorkItemWidgets } from "@plane/types";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
+import { IssuePullRequestsCollapsible } from "@/components/github-integration";
 import { useTimeLineRelationOptions } from "@/components/relations";
 // local imports
 import { AttachmentsCollapsible } from "./attachments";
@@ -86,6 +88,9 @@ export const IssueDetailWidgetCollapsibles = observer(function IssueDetailWidget
           disabled={disabled}
           issueServiceType={issueServiceType}
         />
+      )}
+      {issueServiceType === EIssueServiceType.ISSUES && (
+        <IssuePullRequestsCollapsible workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
       )}
     </div>
   );
