@@ -51,6 +51,7 @@ from plane.db.models import (
 )
 from plane.license.utils.instance_value import get_email_configuration
 from plane.utils.email import generate_plain_text_from_html
+from plane.novapro.webhook_events import classify_event
 from plane.utils.exception_logger import log_exception
 from plane.utils.url_security import pinned_fetch
 
@@ -292,6 +293,11 @@ def webhook_send_task(
             "data": event_data,
             "activity": activity,
         }
+        # NovaPro: a specific event type (issue.state_changed, issue.assigned, ...); see novapro/webhook_events.py
+        payload["event_type"], changes = classify_event(event, action, activity)
+        if changes is not None:
+            payload["changes"] = changes
+        headers["X-Plane-Event-Type"] = payload["event_type"]
 
         # Use HMAC for generating signature
         if webhook.secret_key:

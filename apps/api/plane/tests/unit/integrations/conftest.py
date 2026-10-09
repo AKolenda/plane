@@ -28,8 +28,9 @@ def background_tasks():
         patch("plane.bgtasks.issue_activities_task.issue_activity.delay") as activity,
         patch("plane.bgtasks.github_integration_task.push_work_item_to_github.delay") as push,
         patch("plane.bgtasks.github_integration_task.process_github_webhook.delay") as webhook,
+        patch("plane.bgtasks.webhook_task.model_activity.delay") as model_activity,
     ):
-        yield {"activity": activity, "push": push, "webhook": webhook}
+        yield {"activity": activity, "push": push, "webhook": webhook, "model_activity": model_activity}
 
 
 @pytest.fixture

@@ -110,8 +110,9 @@ def resolve_target_state(project_id, event, base_branch):
 
 
 def apply_state(work_item, state, actor):
-    """Move `work_item` to `state` as `actor` and record the change in its activity. Returns True if it moved."""
+    """Move `work_item` to `state` as `actor`, record the activity and notify webhooks. Returns True if it moved."""
     from plane.bgtasks.issue_activities_task import issue_activity
+    from plane.bgtasks.webhook_task import model_activity
 
     if state is None or work_item.state_id == state.id or state.project_id != work_item.project_id:
         return False
@@ -130,6 +131,15 @@ def apply_state(work_item, state, actor):
         current_instance=current_instance,
         epoch=int(timezone.now().timestamp()),
         notification=True,
+        origin=settings.APP_BASE_URL or settings.WEB_URL,
+    )
+    model_activity.delay(
+        model_name="issue",
+        model_id=str(work_item.id),
+        requested_data={"state_id": str(state.id)},
+        current_instance=current_instance,
+        actor_id=str(actor.id),
+        slug=work_item.workspace.slug,
         origin=settings.APP_BASE_URL or settings.WEB_URL,
     )
     return True
