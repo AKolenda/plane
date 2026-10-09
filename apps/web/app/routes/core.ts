@@ -77,6 +77,9 @@ export const coreRoutes: RouteConfigEntry[] = [
           route(":workspaceSlug/browse/:workItem", "./(all)/[workspaceSlug]/(projects)/browse/[workItem]/page.tsx"),
         ]),
 
+        // Stable work item link by id (notifications, digests, webhooks)
+        route(":workspaceSlug/work-items/:issueId", "./(all)/[workspaceSlug]/(projects)/work-items/[issueId]/page.tsx"),
+
         // Drafts
         layout("./(all)/[workspaceSlug]/(projects)/drafts/layout.tsx", [
           route(":workspaceSlug/drafts", "./(all)/[workspaceSlug]/(projects)/drafts/page.tsx"),

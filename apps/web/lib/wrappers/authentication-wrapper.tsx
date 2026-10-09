@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useRef } from "react";
 import type { ReactNode } from "react";
 import { observer } from "mobx-react";
 import { useSearchParams, usePathname } from "next/navigation";
@@ -51,6 +52,16 @@ export const AuthenticationWrapper = observer(function AuthenticationWrapper(pro
   const { data: currentUserProfile } = useUserProfile();
   const { data: currentUserSettings } = useUserSettings();
   const { loader: workspacesLoader, workspaces } = useWorkspace();
+  // Redirects below run during render. Pushing the same route again on every re-render cancels
+  // the navigation in flight, so a target whose loader redirects (e.g. /<slug>/work-items/<id>)
+  // would never finish loading; push each route once.
+  const lastRedirect = useRef<string | null>(null);
+  const redirectOnce = (route: string, replace = false) => {
+    if (lastRedirect.current === route) return;
+    lastRedirect.current = route;
+    if (replace) router.replace(route);
+    else router.push(route);
+  };
 
   const { isLoading: isUserSWRLoading } = useSWR("USER_INFORMATION", async () => await fetchCurrentUser(), {
     revalidateOnFocus: false,
@@ -101,8 +112,7 @@ export const AuthenticationWrapper = observer(function AuthenticationWrapper(pro
     if (!currentUser?.id) return <>{children}</>;
     else {
       if (currentUserProfile?.id && isUserOnboard) {
-        const currentRedirectRoute = getWorkspaceRedirectionUrl();
-        router.push(currentRedirectRoute);
+        redirectOnce(getWorkspaceRedirectionUrl());
         return <></>;
       } else {
         router.push("/onboarding");
@@ -117,8 +127,7 @@ export const AuthenticationWrapper = observer(function AuthenticationWrapper(pro
       return <></>;
     } else {
       if (currentUser && currentUserProfile?.id && isUserOnboard) {
-        const currentRedirectRoute = getWorkspaceRedirectionUrl();
-        router.replace(currentRedirectRoute);
+        redirectOnce(getWorkspaceRedirectionUrl(), true);
         return <></>;
       } else return <>{children}</>;
     }
@@ -130,8 +139,7 @@ export const AuthenticationWrapper = observer(function AuthenticationWrapper(pro
       return <></>;
     } else {
       if (currentUser && !currentUser?.is_password_autoset && currentUserProfile?.id && isUserOnboard) {
-        const currentRedirectRoute = getWorkspaceRedirectionUrl();
-        router.push(currentRedirectRoute);
+        redirectOnce(getWorkspaceRedirectionUrl());
         return <></>;
       } else return <>{children}</>;
     }

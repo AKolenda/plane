@@ -6,6 +6,7 @@
 
 from django.urls import path
 
+from plane.novapro.views.deep_links import WorkItemLocateEndpoint
 from plane.novapro.views.custom_properties import (
     IssueCustomPropertyDetailEndpoint,
     IssueCustomPropertyEndpoint,
@@ -16,6 +17,11 @@ from plane.novapro.views.custom_properties import (
 PROJECT = "workspaces/<str:slug>/projects/<uuid:project_id>"
 
 urlpatterns = [
+    path(
+        "workspaces/<str:slug>/work-items/<uuid:issue_id>/locate/",
+        WorkItemLocateEndpoint.as_view(),
+        name="work-item-locate",
+    ),
     path(f"{PROJECT}/custom-properties/", IssueCustomPropertyEndpoint.as_view(), name="custom-properties"),
     path(
         f"{PROJECT}/custom-properties/<uuid:pk>/",
