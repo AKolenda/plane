@@ -19,13 +19,12 @@ export interface PasswordStrengthIndicatorProps {
 export function PasswordStrengthIndicator({
   password,
   showCriteria = true,
-  isFocused = false,
 }: PasswordStrengthIndicatorProps) {
   const strength = getPasswordStrength(password);
   const criteria = getPasswordCriteria(password);
   const strengthInfo = getStrengthInfo(strength);
 
-  const isPasswordMeterVisible = isFocused || strength !== E_PASSWORD_STRENGTH.STRENGTH_VALID;
+  const isPasswordMeterVisible = strength !== E_PASSWORD_STRENGTH.STRENGTH_VALID;
 
   if ((!password && !showCriteria) || !isPasswordMeterVisible) {
     return null;

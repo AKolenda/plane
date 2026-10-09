@@ -53,7 +53,7 @@ export function SetPasswordRoot({ onPasswordChange, onConfirmPasswordChange, dis
 
   const isPasswordValid = useMemo(() => {
     const { password, confirmPassword } = passwordState;
-    return password.length >= 8 && password === confirmPassword;
+    return password.length > 0 && password === confirmPassword;
   }, [passwordState]);
 
   const hasPasswordMismatch = useMemo(() => {

@@ -28,21 +28,8 @@ export const getPasswordStrength = (password: string): E_PASSWORD_STRENGTH => {
     return E_PASSWORD_STRENGTH.EMPTY;
   }
 
-  if (password.length < 8) {
-    return E_PASSWORD_STRENGTH.LENGTH_NOT_VALID;
-  }
-
-  // Check all criteria
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasDigit = /[0-9]/.test(password);
-  const hasSpecialChar = /[!@#$%^&*()\-_+=\[\]{}|;:'",.<>?/]/.test(password);
-
-  if (hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar) {
-    return E_PASSWORD_STRENGTH.STRENGTH_VALID;
-  }
-
-  return E_PASSWORD_STRENGTH.STRENGTH_NOT_VALID;
+  // NovaPro: no password strength or length rules; any non-empty password is valid.
+  return E_PASSWORD_STRENGTH.STRENGTH_VALID;
 };
 
 export type PasswordCriteria = {
@@ -52,35 +39,9 @@ export type PasswordCriteria = {
 };
 
 /**
- * Get password criteria for validation display
+ * Get password criteria for validation display (NovaPro: none)
  */
-export const getPasswordCriteria = (password: string): PasswordCriteria[] => [
-  {
-    key: "length",
-    label: "Min 8 characters",
-    isValid: password.length >= 8,
-  },
-  {
-    key: "uppercase",
-    label: "Min 1 upper-case letter",
-    isValid: /[A-Z]/.test(password),
-  },
-  {
-    key: "lowercase",
-    label: "Min 1 lower-case letter",
-    isValid: /[a-z]/.test(password),
-  },
-  {
-    key: "number",
-    label: "Min 1 number",
-    isValid: /[0-9]/.test(password),
-  },
-  {
-    key: "special",
-    label: "Min 1 special character",
-    isValid: /[!@#$%^&*()\-_+=\[\]{}|;:'",.<>?/]/.test(password),
-  },
-];
+export const getPasswordCriteria = (_password: string): PasswordCriteria[] => [];
 
 // Error code messages
 const errorCodeMessages: {

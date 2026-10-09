@@ -5,7 +5,6 @@
 # Python imports
 from urllib.parse import urlencode, urljoin
 import uuid
-from zxcvbn import zxcvbn
 
 # Django imports
 from django.http import HttpResponseRedirect
@@ -192,25 +191,6 @@ class InstanceAdminSignUpEndpoint(View):
             )
             return HttpResponseRedirect(url)
         else:
-            results = zxcvbn(password)
-            if results["score"] < 3:
-                exc = AuthenticationException(
-                    error_code=AUTHENTICATION_ERROR_CODES["PASSWORD_TOO_WEAK"],
-                    error_message="PASSWORD_TOO_WEAK",
-                    payload={
-                        "email": email,
-                        "first_name": first_name,
-                        "last_name": last_name,
-                        "company_name": company_name,
-                        "is_telemetry_enabled": is_telemetry_enabled,
-                    },
-                )
-                url = urljoin(
-                    base_host(request=request, is_admin=True),
-                    "?" + urlencode(exc.get_error_dict()),
-                )
-                return HttpResponseRedirect(url)
-
             # Atomic check-and-create to eliminate the TOCTOU race
             # (GHSA-p548-28jp-wr4p).  Lock the Instance singleton row so that
             # two concurrent signup requests cannot both pass the "no admin yet"

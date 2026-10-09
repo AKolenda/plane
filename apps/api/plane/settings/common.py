@@ -263,12 +263,8 @@ else:
     }
 
 # Password validations
-AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
+# NovaPro: no password strength or length rules.
+AUTH_PASSWORD_VALIDATORS = []
 
 # Password reset time the number of seconds the uniquely generated uid will be valid
 PASSWORD_RESET_TIMEOUT = 3600
