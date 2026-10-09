@@ -6,6 +6,7 @@
 
 from django.urls import path
 
+from plane.novapro.views.external_import import ExternalWorkItemImportEndpoint
 from plane.novapro.views.external_custom_properties import (
     ExternalCustomPropertyListEndpoint,
     ExternalIssueCustomPropertyValuesEndpoint,
@@ -14,6 +15,11 @@ from plane.novapro.views.external_custom_properties import (
 PROJECT = "workspaces/<str:slug>/projects/<uuid:project_id>"
 
 urlpatterns = [
+    path(
+        "workspaces/<str:slug>/work-items/import/",
+        ExternalWorkItemImportEndpoint.as_view(http_method_names=["post"]),
+        name="external-work-item-import",
+    ),
     path(
         f"{PROJECT}/custom-properties/",
         ExternalCustomPropertyListEndpoint.as_view(http_method_names=["get"]),
