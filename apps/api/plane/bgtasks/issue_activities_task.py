@@ -16,6 +16,7 @@ from django.utils import timezone
 
 # Module imports
 from plane.app.serializers import IssueActivitySerializer
+from plane.bgtasks.github_integration_task import schedule_github_push
 from plane.bgtasks.notification_task import notifications
 from plane.db.models import (
     CommentReaction,
@@ -1597,6 +1598,10 @@ def issue_activity(
                 requested_data=requested_data,
                 current_instance=current_instance,
             )
+
+        # Mirror work item changes to GitHub issues for bidirectionally synced repositories
+        if type in ("issue.activity.created", "issue.activity.updated"):
+            schedule_github_push(issue_id, project_id)
 
         return
     except Exception as e:

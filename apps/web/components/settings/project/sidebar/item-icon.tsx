@@ -8,6 +8,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   CyclesOutline,
   EstimateOutline,
+  Github,
   IntakeOutline,
   LabelsOutline,
   MembersOutline,
@@ -35,4 +36,5 @@ export const PROJECT_SETTINGS_ICONS: Record<TProjectSettingsTabs, LucideIcon | R
   labels: LabelsOutline,
   estimates: EstimateOutline,
   automations: TriggerOutline,
+  github: Github,
 };

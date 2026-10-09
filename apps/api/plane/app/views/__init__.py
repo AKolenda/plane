@@ -232,6 +232,18 @@ from .webhook.base import (
     WebhookSecretRegenerateEndpoint,
 )
 
+from .github.base import (
+    GithubAvailableRepositoriesEndpoint,
+    GithubConnectEndpoint,
+    GithubConnectionEndpoint,
+    GithubIntegrationEndpoint,
+    GithubStateMappingEndpoint,
+    GithubWatchedRepositoryDetailEndpoint,
+    GithubWatchedRepositoryEndpoint,
+    IssueGithubPullRequestEndpoint,
+)
+from .github.public import GithubCallbackEndpoint, GithubWebhookEndpoint
+
 from .error_404 import custom_404_view
 
 from .notification.base import MarkAllReadNotificationViewSet
