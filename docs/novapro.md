@@ -247,8 +247,9 @@ The lookup behind it is `GET /api/workspaces/<slug>/work-items/<id>/locate/` (se
 **Images.** `.github/workflows/novapro-images.yml` builds all seven images on every push to `preview` (or on demand) and pushes `:latest` and `:sha-<commit>` tags to GitHub Container Registry. Set it up once:
 
 1. In the fork, enable Actions (**Actions** tab → enable workflows). Forks start with them off.
-2. Run **NovaPro images** (Actions → NovaPro images → Run workflow), or push to `preview`.
-3. Either make the packages public (GitHub → your profile → **Packages** → each `plane-*` package → **Package settings** → **Change visibility**), or log the host in once: `docker login ghcr.io -u <github user>` with a personal access token that has `read:packages`.
+2. Disable upstream's **Branch Build CE** workflow (Actions → Branch Build CE → **⋯** → **Disable workflow**, or `gh workflow disable "Branch Build CE"`). It pushes to makeplane's Docker Hub and fails on every push to `preview` without their credentials; **NovaPro images** replaces it.
+3. Run **NovaPro images** (Actions → NovaPro images → Run workflow), or push to `preview`.
+4. Either make the packages public (GitHub → your profile → **Packages** → each `plane-*` package → **Package settings** → **Change visibility**), or log the host in once: `docker login ghcr.io -u <github user>` with a personal access token that has `read:packages`.
 
 To build on the host instead, run this from a checkout:
 
