@@ -96,6 +96,76 @@ github_config_variables = [
 ]
 
 
+# GitHub integration (pull request linking and issue sync), separate from GitHub login
+github_integration_config_variables = [
+    {
+        "key": "GITHUB_INTEGRATION_HOST_URL",
+        "value": os.environ.get("GITHUB_INTEGRATION_HOST_URL", "https://github.com"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": False,
+    },
+    {
+        "key": "GITHUB_INTEGRATION_API_URL",
+        "value": os.environ.get("GITHUB_INTEGRATION_API_URL"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": False,
+    },
+    {
+        "key": "GITHUB_INTEGRATION_WEBHOOK_BASE_URL",
+        "value": os.environ.get("GITHUB_INTEGRATION_WEBHOOK_BASE_URL"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": False,
+    },
+    {
+        "key": "GITHUB_APP_ID",
+        "value": os.environ.get("GITHUB_APP_ID"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": False,
+    },
+    {
+        "key": "GITHUB_APP_SLUG",
+        "value": os.environ.get("GITHUB_APP_SLUG"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": False,
+    },
+    {
+        "key": "GITHUB_APP_PRIVATE_KEY",
+        "value": os.environ.get("GITHUB_APP_PRIVATE_KEY"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": True,
+    },
+    {
+        "key": "GITHUB_APP_WEBHOOK_SECRET",
+        "value": os.environ.get("GITHUB_APP_WEBHOOK_SECRET"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": True,
+    },
+    {
+        "key": "GITHUB_APP_CLIENT_ID",
+        "value": os.environ.get("GITHUB_APP_CLIENT_ID"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": False,
+    },
+    {
+        "key": "GITHUB_APP_CLIENT_SECRET",
+        "value": os.environ.get("GITHUB_APP_CLIENT_SECRET"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": True,
+    },
+    {
+        "key": "GITHUB_INTEGRATION_OAUTH_CLIENT_ID",
+        "value": os.environ.get("GITHUB_INTEGRATION_OAUTH_CLIENT_ID"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": False,
+    },
+    {
+        "key": "GITHUB_INTEGRATION_OAUTH_CLIENT_SECRET",
+        "value": os.environ.get("GITHUB_INTEGRATION_OAUTH_CLIENT_SECRET"),
+        "category": "GITHUB_INTEGRATION",
+        "is_encrypted": True,
+    },
+]
+
 gitlab_config_variables = [
     {
         "key": "IS_GITLAB_ENABLED",
@@ -255,6 +325,7 @@ core_config_variables = [
     *workspace_management_config_variables,
     *google_config_variables,
     *github_config_variables,
+    *github_integration_config_variables,
     *gitlab_config_variables,
     *gitea_config_variables,
     *smtp_config_variables,

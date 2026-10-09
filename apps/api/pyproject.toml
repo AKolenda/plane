@@ -76,6 +76,8 @@ dependencies = [
     "drf-spectacular==0.29.0",
     # html sanitizer
     "nh3==0.2.18",
+    # github integration (PR linking, issue sync; supports GitHub Enterprise Server)
+    "PyGithub==2.10.0",
 ]
 
 [dependency-groups]

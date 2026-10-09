@@ -20,7 +20,17 @@ from .exporter import ExporterHistory
 from .importer import Importer
 from .intake import Intake, IntakeIssue
 from .integration import (
+    GithubAuthType,
     GithubCommentSync,
+    GithubConnection,
+    GithubIssueSyncMode,
+    GithubPullRequest,
+    GithubPullRequestEvent,
+    GithubPullRequestIssue,
+    GithubPullRequestState,
+    GithubStateMapping,
+    GithubSyncedIssue,
+    GithubWatchedRepository,
     GithubIssueSync,
     GithubRepository,
     GithubRepositorySync,

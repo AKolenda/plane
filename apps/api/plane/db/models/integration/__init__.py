@@ -9,4 +9,16 @@ from .github import (
     GithubIssueSync,
     GithubCommentSync,
 )
+from .github_integration import (
+    GithubAuthType,
+    GithubConnection,
+    GithubIssueSyncMode,
+    GithubPullRequest,
+    GithubPullRequestEvent,
+    GithubPullRequestIssue,
+    GithubPullRequestState,
+    GithubStateMapping,
+    GithubSyncedIssue,
+    GithubWatchedRepository,
+)
 from .slack import SlackProjectSync
