@@ -1,0 +1,94 @@
+name: NovaPro images
+
+# Builds this fork's images and publishes them to GitHub Container Registry as
+# ghcr.io/<owner>/plane-*:latest and :sha-<commit>, for deployments/novapro.
+# Never runs in makeplane/plane.
+
+on:
+  push:
+    branches: [preview]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: "Target platforms"
+        default: "linux/amd64"
+        required: false
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.repository_owner != 'makeplane'
+    name: ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: plane-frontend
+            context: .
+            dockerfile: apps/web/Dockerfile.web
+          - image: plane-space
+            context: .
+            dockerfile: apps/space/Dockerfile.space
+          - image: plane-admin
+            context: .
+            dockerfile: apps/admin/Dockerfile.admin
+          - image: plane-live
+            context: .
+            dockerfile: apps/live/Dockerfile.live
+          - image: plane-backend
+            context: apps/api
+            dockerfile: apps/api/Dockerfile.api
+          - image: plane-proxy
+            context: apps/proxy
+            dockerfile: apps/proxy/Dockerfile.ce
+          - image: plane-transcript-importer
+            context: tools/transcript-importer
+            dockerfile: tools/transcript-importer/Dockerfile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Image name
+        id: name
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          echo "image=ghcr.io/${owner}/${{ matrix.image }}" >> "$GITHUB_OUTPUT"
+          echo "sha=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          platforms: ${{ inputs.platforms || 'linux/amd64' }}
+          push: true
+          tags: |
+            ${{ steps.name.outputs.image }}:latest
+            ${{ steps.name.outputs.image }}:sha-${{ steps.name.outputs.sha }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}

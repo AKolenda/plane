@@ -1,0 +1,35 @@
+# Build the fork's images from this checkout instead of pulling them:
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml build
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d
+# The images keep the names in docker-compose.yml, so a later plain `up` reuses them.
+# The frontends need several GB of RAM to build; on a small NAS prefer the CI-built images.
+
+services:
+  web:
+    build:
+      context: ../..
+      dockerfile: apps/web/Dockerfile.web
+  space:
+    build:
+      context: ../..
+      dockerfile: apps/space/Dockerfile.space
+  admin:
+    build:
+      context: ../..
+      dockerfile: apps/admin/Dockerfile.admin
+  live:
+    build:
+      context: ../..
+      dockerfile: apps/live/Dockerfile.live
+  # api, worker, beat-worker and migrator share this image
+  api:
+    build:
+      context: ../../apps/api
+      dockerfile: Dockerfile.api
+  proxy:
+    build:
+      context: ../../apps/proxy
+      dockerfile: Dockerfile.ce
+  transcript-importer:
+    build:
+      context: ../../tools/transcript-importer
