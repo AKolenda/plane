@@ -24,7 +24,7 @@ import { GithubIntegrationService } from "@/services/integrations";
 import { AddRepositoryModal } from "./add-repository-modal";
 import { formatApiError, githubIntegrationKey, githubRepositoriesKey } from "./keys";
 import { GithubRepositoriesTable } from "./repositories-table";
-import { ResizableTable, TABLE_CELL_CLASS } from "./resizable-table";
+import { ResizableTable, TABLE_CELL_CLASS } from "@/components/common/resizable-table";
 
 const githubService = new GithubIntegrationService();
 

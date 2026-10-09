@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Aangepaste eigenschappen",
+    "add": "Eigenschap toevoegen",
+    "edit": "Eigenschap bewerken",
+    "none": "Nog geen aangepaste eigenschappen.",
+    "empty": "Leeg",
+    "key": "Sleutel",
+    "type": "Type",
+    "options": "Opties",
+    "add_option": "Optie toevoegen",
+    "delete_confirmation": "{name} verwijderen? De waarde wordt van alle werkitems verwijderd.",
+    "types": {
+      "text": "Tekst",
+      "number": "Getal",
+      "date": "Datum",
+      "select": "Keuze",
+      "user": "Gebruiker"
+    }
   }
 }

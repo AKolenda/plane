@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Właściwości niestandardowe",
+    "add": "Dodaj właściwość",
+    "edit": "Edytuj właściwość",
+    "none": "Brak właściwości niestandardowych.",
+    "empty": "Puste",
+    "key": "Klucz",
+    "type": "Typ",
+    "options": "Opcje",
+    "add_option": "Dodaj opcję",
+    "delete_confirmation": "Usunąć {name}? Jej wartość zostanie usunięta ze wszystkich elementów pracy.",
+    "types": {
+      "text": "Tekst",
+      "number": "Liczba",
+      "date": "Data",
+      "select": "Wybór",
+      "user": "Użytkownik"
+    }
   }
 }

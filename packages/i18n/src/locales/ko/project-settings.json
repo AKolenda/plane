@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "사용자 정의 속성",
+    "add": "속성 추가",
+    "edit": "속성 편집",
+    "none": "아직 사용자 정의 속성이 없습니다.",
+    "empty": "비어 있음",
+    "key": "키",
+    "type": "유형",
+    "options": "옵션",
+    "add_option": "옵션 추가",
+    "delete_confirmation": "{name}을(를) 삭제하시겠습니까? 모든 작업 항목에서 값이 제거됩니다.",
+    "types": {
+      "text": "텍스트",
+      "number": "숫자",
+      "date": "날짜",
+      "select": "선택",
+      "user": "사용자"
+    }
   }
 }

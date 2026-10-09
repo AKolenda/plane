@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "自訂屬性",
+    "add": "新增屬性",
+    "edit": "編輯屬性",
+    "none": "尚無自訂屬性。",
+    "empty": "空",
+    "key": "鍵",
+    "type": "類型",
+    "options": "選項",
+    "add_option": "新增選項",
+    "delete_confirmation": "刪除 {name}？其值將從所有工作事項中移除。",
+    "types": {
+      "text": "文字",
+      "number": "數字",
+      "date": "日期",
+      "select": "選擇",
+      "user": "使用者"
+    }
   }
 }

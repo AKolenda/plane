@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Vlastní vlastnosti",
+    "add": "Přidat vlastnost",
+    "edit": "Upravit vlastnost",
+    "none": "Zatím žádné vlastní vlastnosti.",
+    "empty": "Prázdné",
+    "key": "Klíč",
+    "type": "Typ",
+    "options": "Možnosti",
+    "add_option": "Přidat možnost",
+    "delete_confirmation": "Smazat {name}? Její hodnota bude odstraněna ze všech pracovních položek.",
+    "types": {
+      "text": "Text",
+      "number": "Číslo",
+      "date": "Datum",
+      "select": "Výběr",
+      "user": "Uživatel"
+    }
   }
 }

@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Benutzerdefinierte Eigenschaften",
+    "add": "Eigenschaft hinzufügen",
+    "edit": "Eigenschaft bearbeiten",
+    "none": "Noch keine benutzerdefinierten Eigenschaften.",
+    "empty": "Leer",
+    "key": "Schlüssel",
+    "type": "Typ",
+    "options": "Optionen",
+    "add_option": "Option hinzufügen",
+    "delete_confirmation": "{name} löschen? Der Wert wird aus allen Arbeitselementen entfernt.",
+    "types": {
+      "text": "Text",
+      "number": "Zahl",
+      "date": "Datum",
+      "select": "Auswahl",
+      "user": "Benutzer"
+    }
   }
 }

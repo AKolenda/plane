@@ -9,14 +9,22 @@
 :3000 {
 	root * /usr/share/caddy/html
 
-	# Per-client-IP rate limiting for static asset requests
+	# Per-client-IP rate limiting for static asset requests. A cold load of a work item page
+	# fetches 300+ chunks, so a lower cap returns 429 to first-time visitors (and to anyone
+	# opening a link after their session expired), breaking the page.
 	rate_limit {
 		zone static {
 			key {client_ip}
-			events 300
+			events 1500
 			window 1m
 		}
 	}
+
+	# Build assets have content hashes in their names; let browsers keep them instead of
+	# revalidating each one on every full page load (e.g. opening a link from a notification),
+	# which also keeps active users under the rate limit above.
+	@hashed_assets path /assets/*
+	header @hashed_assets Cache-Control "public, max-age=31536000, immutable"
 
 	# Security headers (HSTS is set at the TLS terminator)
 	header {

@@ -22,7 +22,7 @@ import { useProjectState } from "@/hooks/store/use-project-state";
 import { GithubIntegrationService } from "@/services/integrations";
 // local imports
 import { formatApiError, githubRepositoriesKey } from "./keys";
-import { CELL_CONTROL_CLASS, ResizableTable, TABLE_CELL_CLASS } from "./resizable-table";
+import { CELL_CONTROL_CLASS, ResizableTable, TABLE_CELL_CLASS } from "@/components/common/resizable-table";
 
 const githubService = new GithubIntegrationService();
 // Base UI selects need a concrete value for "nothing selected"

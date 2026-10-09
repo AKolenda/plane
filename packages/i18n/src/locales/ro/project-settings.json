@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Proprietăți personalizate",
+    "add": "Adaugă proprietate",
+    "edit": "Editează proprietatea",
+    "none": "Nicio proprietate personalizată încă.",
+    "empty": "Gol",
+    "key": "Cheie",
+    "type": "Tip",
+    "options": "Opțiuni",
+    "add_option": "Adaugă opțiune",
+    "delete_confirmation": "Ștergeți {name}? Valoarea va fi eliminată din toate activitățile.",
+    "types": {
+      "text": "Text",
+      "number": "Număr",
+      "date": "Dată",
+      "select": "Selecție",
+      "user": "Utilizator"
+    }
   }
 }

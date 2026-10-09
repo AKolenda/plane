@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Özel özellikler",
+    "add": "Özellik ekle",
+    "edit": "Özelliği düzenle",
+    "none": "Henüz özel özellik yok.",
+    "empty": "Boş",
+    "key": "Anahtar",
+    "type": "Tür",
+    "options": "Seçenekler",
+    "add_option": "Seçenek ekle",
+    "delete_confirmation": "{name} silinsin mi? Değeri tüm iş öğelerinden kaldırılacak.",
+    "types": {
+      "text": "Metin",
+      "number": "Sayı",
+      "date": "Tarih",
+      "select": "Seçim",
+      "user": "Kullanıcı"
+    }
   }
 }

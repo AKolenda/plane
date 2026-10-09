@@ -1,0 +1,280 @@
+# NovaPro Plane (Community Edition fork) — production Compose file.
+#
+# Runs the images built from this fork (ghcr.io/<owner>/plane-*), never upstream's.
+# All settings come from `.env` next to this file (copy `.env.example`).
+#
+#   docker compose up -d                                        # pull the fork's images and run
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build   # build from this checkout
+#
+# Bundled Postgres, Valkey, RabbitMQ and MinIO run by default. To use your own, set the
+# matching PLANE_BUNDLED_*_REPLICAS to 0 and point DATABASE_URL / REDIS_URL / AMQP_URL /
+# AWS_S3_ENDPOINT_URL at it. See docs/novapro.md (TrueNAS: "Install via YAML").
+
+x-image: &image-defaults
+  restart: unless-stopped
+  pull_policy: ${PLANE_PULL_POLICY:-missing}
+
+x-db-env: &db-env
+  PGHOST: ${PGHOST:-plane-db}
+  PGDATABASE: ${POSTGRES_DB:-plane}
+  POSTGRES_USER: ${POSTGRES_USER:-plane}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+  POSTGRES_DB: ${POSTGRES_DB:-plane}
+  POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+
+x-redis-env: &redis-env
+  REDIS_HOST: ${REDIS_HOST:-plane-redis}
+  REDIS_PORT: ${REDIS_PORT:-6379}
+  REDIS_URL: ${REDIS_URL:-redis://plane-redis:6379/}
+
+x-s3-env: &s3-env
+  USE_MINIO: ${USE_MINIO:-1}
+  AWS_REGION: ${AWS_REGION:-}
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-plane-access-key}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:?set AWS_SECRET_ACCESS_KEY in .env}
+  AWS_S3_ENDPOINT_URL: ${AWS_S3_ENDPOINT_URL:-http://plane-minio:9000}
+  AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME:-uploads}
+  MINIO_ENDPOINT_SSL: ${MINIO_ENDPOINT_SSL:-0}
+  FILE_SIZE_LIMIT: ${FILE_SIZE_LIMIT:-5242880}
+
+x-app-env: &app-env
+  <<: [*db-env, *redis-env, *s3-env]
+  DEBUG: "0"
+  SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in .env}
+  WEB_URL: ${WEB_URL:?set WEB_URL in .env, e.g. http://truenas.local:8080}
+  APP_BASE_URL: ${WEB_URL}
+  CORS_ALLOWED_ORIGINS: ${WEB_URL}
+  DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-plane}:${POSTGRES_PASSWORD}@plane-db:5432/${POSTGRES_DB:-plane}}
+  AMQP_URL: ${AMQP_URL:-amqp://${RABBITMQ_USER:-plane}:${RABBITMQ_PASSWORD:-plane}@plane-mq:5672/${RABBITMQ_VHOST:-plane}}
+  GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+  API_KEY_RATE_LIMIT: ${API_KEY_RATE_LIMIT:-60/minute}
+  LIVE_SERVER_SECRET_KEY: ${LIVE_SERVER_SECRET_KEY:?set LIVE_SERVER_SECRET_KEY in .env}
+  WEBHOOK_ALLOWED_IPS: ${WEBHOOK_ALLOWED_IPS:-}
+  WEBHOOK_ALLOWED_HOSTS: ${WEBHOOK_ALLOWED_HOSTS:-}
+  # GitHub integration (docs/github-integration.md)
+  GITHUB_INTEGRATION_HOST_URL: ${GITHUB_INTEGRATION_HOST_URL:-https://github.com}
+  GITHUB_INTEGRATION_API_URL: ${GITHUB_INTEGRATION_API_URL:-}
+  GITHUB_INTEGRATION_WEBHOOK_BASE_URL: ${GITHUB_INTEGRATION_WEBHOOK_BASE_URL:-}
+  GITHUB_APP_ID: ${GITHUB_APP_ID:-}
+  GITHUB_APP_SLUG: ${GITHUB_APP_SLUG:-}
+  GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY:-}
+  GITHUB_APP_WEBHOOK_SECRET: ${GITHUB_APP_WEBHOOK_SECRET:-}
+  GITHUB_APP_CLIENT_ID: ${GITHUB_APP_CLIENT_ID:-}
+  GITHUB_APP_CLIENT_SECRET: ${GITHUB_APP_CLIENT_SECRET:-}
+  GITHUB_INTEGRATION_OAUTH_CLIENT_ID: ${GITHUB_INTEGRATION_OAUTH_CLIENT_ID:-}
+  GITHUB_INTEGRATION_OAUTH_CLIENT_SECRET: ${GITHUB_INTEGRATION_OAUTH_CLIENT_SECRET:-}
+
+x-backend: &backend
+  <<: *image-defaults
+  image: ${PLANE_IMAGE_REGISTRY:-ghcr.io/akolenda}/plane-backend:${PLANE_IMAGE_TAG:-latest}
+  environment:
+    <<: *app-env
+  depends_on: &backend-deps
+    plane-db:
+      condition: service_healthy
+      required: false
+    plane-redis:
+      condition: service_started
+      required: false
+    plane-mq:
+      condition: service_healthy
+      required: false
+
+services:
+  web:
+    <<: *image-defaults
+    image: ${PLANE_IMAGE_REGISTRY:-ghcr.io/akolenda}/plane-frontend:${PLANE_IMAGE_TAG:-latest}
+    depends_on: [api]
+
+  space:
+    <<: *image-defaults
+    image: ${PLANE_IMAGE_REGISTRY:-ghcr.io/akolenda}/plane-space:${PLANE_IMAGE_TAG:-latest}
+    depends_on: [api]
+
+  admin:
+    <<: *image-defaults
+    image: ${PLANE_IMAGE_REGISTRY:-ghcr.io/akolenda}/plane-admin:${PLANE_IMAGE_TAG:-latest}
+    depends_on: [api]
+
+  live:
+    <<: *image-defaults
+    image: ${PLANE_IMAGE_REGISTRY:-ghcr.io/akolenda}/plane-live:${PLANE_IMAGE_TAG:-latest}
+    environment:
+      <<: *redis-env
+      API_BASE_URL: http://api:8000
+      LIVE_SERVER_SECRET_KEY: ${LIVE_SERVER_SECRET_KEY}
+    depends_on: [api]
+
+  api:
+    <<: *backend
+    command: ./bin/docker-entrypoint-api.sh
+    volumes:
+      - logs_api:/code/plane/logs
+    depends_on:
+      <<: *backend-deps
+      migrator:
+        condition: service_completed_successfully
+
+  worker:
+    <<: *backend
+    command: ./bin/docker-entrypoint-worker.sh
+    volumes:
+      - logs_worker:/code/plane/logs
+    depends_on:
+      <<: *backend-deps
+      api:
+        condition: service_started
+
+  beat-worker:
+    <<: *backend
+    command: ./bin/docker-entrypoint-beat.sh
+    volumes:
+      - logs_beat:/code/plane/logs
+    depends_on:
+      <<: *backend-deps
+      api:
+        condition: service_started
+
+  migrator:
+    <<: *backend
+    restart: on-failure
+    command: ./bin/docker-entrypoint-migrator.sh
+    volumes:
+      - logs_migrator:/code/plane/logs
+
+  proxy:
+    <<: *image-defaults
+    image: ${PLANE_IMAGE_REGISTRY:-ghcr.io/akolenda}/plane-proxy:${PLANE_IMAGE_TAG:-latest}
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+      APP_DOMAIN: ${APP_DOMAIN:-localhost}
+      FILE_SIZE_LIMIT: ${FILE_SIZE_LIMIT:-5242880}
+      BUCKET_NAME: ${AWS_S3_BUCKET_NAME:-uploads}
+      CERT_EMAIL: ${CERT_EMAIL:-}
+      CERT_ACME_CA: ${CERT_ACME_CA:-https://acme-v02.api.letsencrypt.org/directory}
+      CERT_ACME_DNS: ${CERT_ACME_DNS:-}
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-0.0.0.0/0}
+    ports:
+      # Not 80/443: TrueNAS and most NAS hosts already use them for their own UI
+      - ${PLANE_HTTP_PORT:-8080}:80
+      - ${PLANE_HTTPS_PORT:-8443}:443
+    volumes:
+      - proxy_config:/config
+      - proxy_data:/data
+    depends_on: [web, api, space, admin, live]
+
+  # --- Optional add-ons -------------------------------------------------------------------
+
+  transcript-importer:
+    <<: *image-defaults
+    image: ${PLANE_IMAGE_REGISTRY:-ghcr.io/akolenda}/plane-transcript-importer:${PLANE_IMAGE_TAG:-latest}
+    deploy:
+      replicas: ${TRANSCRIPT_IMPORTER_REPLICAS:-0}
+    environment:
+      PLANE_BASE_URL: http://api:8000
+      PLANE_API_KEY: ${TRANSCRIPT_PLANE_API_KEY:-}
+      PLANE_WORKSPACE_SLUG: ${TRANSCRIPT_WORKSPACE_SLUG:-}
+      PLANE_PROJECT: ${TRANSCRIPT_PROJECT:-}
+      TRANSCRIPT_LABELS: ${TRANSCRIPT_LABELS:-transcript}
+      TRANSCRIPT_ASSIGNEES: ${TRANSCRIPT_ASSIGNEES:-}
+      TRANSCRIPT_SOURCE_URL_BASE: ${TRANSCRIPT_SOURCE_URL_BASE:-}
+      TRANSCRIPT_POLL_SECONDS: ${TRANSCRIPT_POLL_SECONDS:-30}
+      TRANSCRIPT_SETTLE_SECONDS: ${TRANSCRIPT_SETTLE_SECONDS:-10}
+      TRANSCRIPT_LLM_BASE_URL: ${TRANSCRIPT_LLM_BASE_URL:-}
+      TRANSCRIPT_LLM_MODEL: ${TRANSCRIPT_LLM_MODEL:-llama3.1}
+      TRANSCRIPT_LLM_API_KEY: ${TRANSCRIPT_LLM_API_KEY:-}
+    volumes:
+      - ${TRANSCRIPT_HOST_DIR:-./transcripts}:/transcripts:ro
+      - transcript_state:/data
+    depends_on: [api]
+
+  db-backup:
+    <<: *image-defaults
+    image: postgres:15.7-alpine
+    deploy:
+      replicas: ${PLANE_BACKUP_REPLICAS:-1}
+    entrypoint: ["/bin/sh", "/scripts/backup.sh", "--loop"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-plane}:${POSTGRES_PASSWORD}@plane-db:5432/${POSTGRES_DB:-plane}}
+      BACKUP_DIR: /backups
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-14}
+      BACKUP_INTERVAL_HOURS: ${BACKUP_INTERVAL_HOURS:-24}
+    volumes:
+      - ./backup.sh:/scripts/backup.sh:ro
+      - ./restore.sh:/scripts/restore.sh:ro
+      - ${PLANE_BACKUP_DIR:-./backups}:/backups
+    depends_on:
+      plane-db:
+        condition: service_healthy
+        required: false
+
+  # --- Bundled infrastructure (set the replicas to 0 to use your own) ----------------------
+
+  plane-db:
+    image: postgres:15.7-alpine
+    restart: unless-stopped
+    command: postgres -c 'max_connections=1000'
+    deploy:
+      replicas: ${PLANE_BUNDLED_DB_REPLICAS:-1}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-plane}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-plane}
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - ${PLANE_PGDATA:-pgdata}:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-plane} -d ${POSTGRES_DB:-plane}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  plane-redis:
+    image: valkey/valkey:7.2.11-alpine
+    restart: unless-stopped
+    deploy:
+      replicas: ${PLANE_BUNDLED_REDIS_REPLICAS:-1}
+    volumes:
+      - redisdata:/data
+
+  plane-mq:
+    image: rabbitmq:3.13.6-management-alpine
+    restart: unless-stopped
+    deploy:
+      replicas: ${PLANE_BUNDLED_MQ_REPLICAS:-1}
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-plane}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-plane}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-plane}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+
+  plane-minio:
+    image: docker.io/pgsty/silo:RELEASE.2026-09-16T00-00-00Z
+    restart: unless-stopped
+    command: server /export --console-address ":9090"
+    deploy:
+      replicas: ${PLANE_BUNDLED_STORAGE_REPLICAS:-1}
+    environment:
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID:-plane-access-key}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
+    volumes:
+      - ${PLANE_UPLOADS:-uploads}:/export
+
+volumes:
+  pgdata:
+  redisdata:
+  rabbitmq_data:
+  uploads:
+  proxy_config:
+  proxy_data:
+  transcript_state:
+  logs_api:
+  logs_worker:
+  logs_beat:
+  logs_migrator:

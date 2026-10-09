@@ -128,7 +128,9 @@ def closed_state_for(repository):
 
 
 def _record_activity(activity_type, work_item, actor, requested_data, current_instance):
+    """Write the work item's activity and notify outbound webhooks, as a web edit would."""
     from plane.bgtasks.issue_activities_task import issue_activity
+    from plane.bgtasks.webhook_task import model_activity
 
     issue_activity.delay(
         type=activity_type,
@@ -139,6 +141,14 @@ def _record_activity(activity_type, work_item, actor, requested_data, current_in
         current_instance=json.dumps(current_instance, cls=DjangoJSONEncoder) if current_instance else None,
         epoch=int(timezone.now().timestamp()),
         notification=True,
+    )
+    model_activity.delay(
+        model_name="issue",
+        model_id=str(work_item.id),
+        requested_data=json.loads(json.dumps(requested_data, cls=DjangoJSONEncoder)),
+        current_instance=json.dumps(current_instance, cls=DjangoJSONEncoder) if current_instance else None,
+        actor_id=str(actor.id),
+        slug=work_item.workspace.slug,
     )
 
 

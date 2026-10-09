@@ -77,6 +77,9 @@ export const coreRoutes: RouteConfigEntry[] = [
           route(":workspaceSlug/browse/:workItem", "./(all)/[workspaceSlug]/(projects)/browse/[workItem]/page.tsx"),
         ]),
 
+        // Stable work item link by id (notifications, digests, webhooks)
+        route(":workspaceSlug/work-items/:issueId", "./(all)/[workspaceSlug]/(projects)/work-items/[issueId]/page.tsx"),
+
         // Drafts
         layout("./(all)/[workspaceSlug]/(projects)/drafts/layout.tsx", [
           route(":workspaceSlug/drafts", "./(all)/[workspaceSlug]/(projects)/drafts/page.tsx"),
@@ -341,6 +344,11 @@ export const coreRoutes: RouteConfigEntry[] = [
             route(
               ":workspaceSlug/settings/projects/:projectId/estimates",
               "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/estimates/page.tsx"
+            ),
+            // Project custom properties
+            route(
+              ":workspaceSlug/settings/projects/:projectId/custom-properties",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/custom-properties/page.tsx"
             ),
             // Project GitHub pull request automation
             route(
