@@ -11,7 +11,6 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from zxcvbn import zxcvbn
 
 # Django imports
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -134,19 +133,6 @@ class ResetPasswordEndpoint(View):
                 exc = AuthenticationException(
                     error_code=AUTHENTICATION_ERROR_CODES["INVALID_PASSWORD"],
                     error_message="INVALID_PASSWORD",
-                )
-                url = urljoin(
-                    base_host(request=request, is_app=True),
-                    "accounts/reset-password?" + urlencode(exc.get_error_dict()),
-                )
-                return HttpResponseRedirect(url)
-
-            # Check the password complexity
-            results = zxcvbn(password)
-            if results["score"] < 3:
-                exc = AuthenticationException(
-                    error_code=AUTHENTICATION_ERROR_CODES["PASSWORD_TOO_WEAK"],
-                    error_message="PASSWORD_TOO_WEAK",
                 )
                 url = urljoin(
                     base_host(request=request, is_app=True),

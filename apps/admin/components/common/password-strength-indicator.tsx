@@ -79,16 +79,12 @@ export interface PasswordStrengthIndicatorProps {
   isFocused?: boolean;
 }
 
-export function PasswordStrengthIndicator({
-  password,
-  showCriteria = true,
-  isFocused = false,
-}: PasswordStrengthIndicatorProps) {
+export function PasswordStrengthIndicator({ password, showCriteria = true }: PasswordStrengthIndicatorProps) {
   const strength = getPasswordStrength(password);
   const criteria = getPasswordCriteria(password);
   const strengthInfo = getStrengthInfo(strength);
 
-  const isPasswordMeterVisible = isFocused ? true : strength === E_PASSWORD_STRENGTH.STRENGTH_VALID ? false : true;
+  const isPasswordMeterVisible = strength !== E_PASSWORD_STRENGTH.STRENGTH_VALID;
 
   if ((!password && !showCriteria) || !isPasswordMeterVisible) {
     return null;

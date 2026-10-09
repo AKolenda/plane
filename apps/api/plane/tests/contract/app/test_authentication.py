@@ -679,6 +679,8 @@ class TestAuthenticationThrottle:
             response = django_client.post(url, {"email": "throttle-up@plane.so", "password": "secret123"}, follow=False)
             assert "RATE_LIMIT_EXCEEDED" not in response.url
 
+            # The sign-up succeeds and logs the client in; the throttle only counts anonymous requests.
+            django_client.logout()
             response = django_client.post(url, {"email": "throttle-up@plane.so", "password": "secret123"}, follow=False)
             assert "RATE_LIMIT_EXCEEDED" in response.url
 
@@ -701,6 +703,8 @@ class TestAuthenticationThrottle:
             response = django_client.post(url, {"email": "throttle-up@plane.so", "password": "secret123"}, follow=False)
             assert "RATE_LIMIT_EXCEEDED" not in response.url
 
+            # The sign-up succeeds and logs the client in; the throttle only counts anonymous requests.
+            django_client.logout()
             response = django_client.post(url, {"email": "throttle-up@plane.so", "password": "secret123"}, follow=False)
             assert "RATE_LIMIT_EXCEEDED" in response.url
 

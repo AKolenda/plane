@@ -16,9 +16,6 @@ from plane.utils.url_security import pinned_fetch_following_redirects
 # Django imports
 from django.utils import timezone
 
-# Third party imports
-from zxcvbn import zxcvbn
-
 from plane.bgtasks.user_activation_email_task import user_activation_email
 
 # Module imports
@@ -88,15 +85,7 @@ class Adapter:
         return email
 
     def validate_password(self, email):
-        """Validate password strength"""
-        results = zxcvbn(self.code)
-        if results["score"] < 3:
-            self.logger.warning("Password is not strong enough")
-            raise AuthenticationException(
-                error_code=AUTHENTICATION_ERROR_CODES["PASSWORD_TOO_WEAK"],
-                error_message="PASSWORD_TOO_WEAK",
-                payload={"email": email},
-            )
+        """NovaPro: no password strength or length rules; any non-empty password is accepted."""
         return
 
     def __check_signup(self, email):
