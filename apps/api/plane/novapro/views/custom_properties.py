@@ -37,19 +37,16 @@ class IssueCustomPropertySerializer(serializers.ModelSerializer):
         if instance and "property_type" in attrs and attrs["property_type"] != instance.property_type:
             raise serializers.ValidationError({"property_type": "The type of a property cannot change."})
         property_type = attrs.get("property_type", instance.property_type if instance else None)
-        try:
-            if "name" in attrs:
-                attrs["name"] = attrs["name"].strip()
-                if not attrs["name"]:
-                    raise CustomPropertyError("Name is required.")
-            if not instance and not attrs.get("key"):
-                attrs["key"] = make_key(attrs.get("name", ""))
-            if "options" in attrs or not instance:
-                attrs["options"] = normalize_options(
-                    property_type, attrs.get("options", []), instance.options if instance else None
-                )
-        except CustomPropertyError as e:
-            raise serializers.ValidationError({"detail": str(e)}) from e
+        if "name" in attrs:
+            attrs["name"] = attrs["name"].strip()
+            if not attrs["name"]:
+                raise CustomPropertyError("Name is required.")
+        if not instance and not attrs.get("key"):
+            attrs["key"] = make_key(attrs.get("name", ""))
+        if "options" in attrs or not instance:
+            attrs["options"] = normalize_options(
+                property_type, attrs.get("options", []), instance.options if instance else None
+            )
         return attrs
 
 
@@ -118,8 +115,6 @@ class IssueCustomPropertyValuesEndpoint(BaseAPIView):
     def patch(self, request, slug, project_id, issue_id):
         """Set some values: `{"<property id or key>": value | null}`. Unlisted properties keep their value."""
         issue = Issue.issue_objects.get(workspace__slug=slug, project_id=project_id, pk=issue_id)
-        try:
-            set_values(issue, request.data, actor=request.user)
-        except CustomPropertyError as e:
-            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        # Invalid values raise CustomPropertyError, which DRF answers with 400 {"error": ...}
+        set_values(issue, request.data, actor=request.user)
         return Response(values_for_issues(project_id, issue_ids=[issue_id]).get(str(issue_id), {}))

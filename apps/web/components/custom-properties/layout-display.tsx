@@ -112,7 +112,7 @@ export const CustomPropertyCells = observer(function CustomPropertyCells(props: 
       setToast({
         type: "error",
         title: t("common.something_went_wrong"),
-        message: (error as { detail?: string } | undefined)?.detail,
+        message: (error as { error?: string } | undefined)?.error,
       });
     }
   };

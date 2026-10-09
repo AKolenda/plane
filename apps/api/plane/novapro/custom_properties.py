@@ -18,10 +18,13 @@ from datetime import date
 from decimal import Decimal, InvalidOperation
 
 # Django imports
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.utils.dateparse import parse_date
 from django.utils.text import slugify
+
+# Third party imports
+from rest_framework.exceptions import ValidationError
 
 # Module imports
 from plane.db.models import (
@@ -36,8 +39,12 @@ MAX_OPTIONS = 200
 VALUE_COLUMNS = ("value_text", "value_number", "value_date", "value_option", "value_user")
 
 
-class CustomPropertyError(ValueError):
-    """An invalid property definition or value; the message is safe to return to the client."""
+class CustomPropertyError(ValidationError):
+    """An invalid property definition or value. DRF answers it with 400 `{"error": message}`."""
+
+    def __init__(self, message):
+        super().__init__({"error": message})
+        self.message = message
 
 
 # Definitions -------------------------------------------------------------------------------
@@ -98,7 +105,7 @@ def _project_member(prop, raw):
             .select_related("member")
             .first()
         )
-    except (ValueError, ValidationError) as e:  # malformed UUID
+    except (ValueError, DjangoValidationError) as e:  # malformed UUID
         raise CustomPropertyError(f"{prop.name}: unknown user {raw!r}.") from e
     if membership is None:
         raise CustomPropertyError(f"{prop.name}: {raw!r} is not a member of this project.")

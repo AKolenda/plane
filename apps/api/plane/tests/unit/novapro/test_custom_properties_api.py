@@ -66,7 +66,7 @@ class TestCustomPropertyApi:
         assert bulk.data == {str(work_item.id): {points["id"]: 8}}
 
         bad = session_client.patch(values_url, {"points": "eight"}, format="json")
-        assert bad.status_code == 400 and "Points" in bad.data["detail"]
+        assert bad.status_code == 400 and "Points" in bad.data["error"]
 
     def test_only_admins_define_properties_and_guests_cannot_write_values(
         self, api_client, workspace, project, work_item

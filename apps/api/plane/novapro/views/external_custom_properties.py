@@ -5,14 +5,13 @@
 """Public API (X-Api-Key) endpoints for custom properties. Values are keyed by property `key`."""
 
 # Third party imports
-from rest_framework import status
 from rest_framework.response import Response
 
 # Module imports
 from plane.api.views.base import BaseAPIView
 from plane.app.permissions import ProjectEntityPermission
 from plane.db.models import Issue, IssueCustomProperty
-from plane.novapro.custom_properties import CustomPropertyError, set_values, values_for_issues
+from plane.novapro.custom_properties import set_values, values_for_issues
 from plane.novapro.views.custom_properties import IssueCustomPropertySerializer
 
 
@@ -41,8 +40,6 @@ class ExternalIssueCustomPropertyValuesEndpoint(BaseAPIView):
 
     def patch(self, request, slug, project_id, issue_id):
         issue = Issue.issue_objects.get(workspace__slug=slug, project_id=project_id, pk=issue_id)
-        try:
-            set_values(issue, request.data, actor=request.user)
-        except CustomPropertyError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        # Invalid values raise CustomPropertyError, which DRF answers with 400 {"error": ...}
+        set_values(issue, request.data, actor=request.user)
         return Response(values_for_issues(project_id, issue_ids=[issue_id], friendly=True).get(str(issue_id), {}))

@@ -38,11 +38,10 @@ class ExternalWorkItemImportEndpoint(BaseAPIView):
                 try:
                     results.append(describe(*import_work_item(workspace, item, request.user)))
                 except ExternalImportError as e:
-                    results.append({"error": str(e)})
+                    # Only the validation message composed in external_import.py, never internals
+                    results.append({"error": e.message})
             return Response(results, status=status.HTTP_207_MULTI_STATUS)
 
-        try:
-            issue, created = import_work_item(workspace, request.data, request.user)
-        except ExternalImportError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        # Invalid input raises ExternalImportError, which DRF answers with 400 {"error": ...}
+        issue, created = import_work_item(workspace, request.data, request.user)
         return Response(describe(issue, created), status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)

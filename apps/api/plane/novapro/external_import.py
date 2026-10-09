@@ -22,6 +22,9 @@ from django.db import connection, transaction
 from django.db.models import Q
 from django.utils import timezone
 
+# Third party imports
+from rest_framework.exceptions import ValidationError
+
 # Module imports
 from plane.db.models import Issue, IssueAssignee, IssueLabel, IssueLink, Label, Project, ProjectMember
 from plane.utils.content_validator import validate_html_content
@@ -36,8 +39,12 @@ MEMBER_ROLES = (15, 20)  # member, admin
 LABEL_COLOR = "#6B7280"
 
 
-class ExternalImportError(ValueError):
-    """A rejected import item; the message is safe to return to the client."""
+class ExternalImportError(ValidationError):
+    """A rejected import item. DRF answers it with 400 `{"error": message}`."""
+
+    def __init__(self, message):
+        super().__init__({"error": message})
+        self.message = message
 
 
 # Input normalization -----------------------------------------------------------------------
@@ -263,7 +270,7 @@ def import_work_item(workspace, item, actor):
             try:
                 set_values(issue, custom_properties, actor=actor)
             except CustomPropertyError as e:
-                raise ExternalImportError(str(e)) from e
+                raise ExternalImportError(e.message) from e
 
     if created or requested:
         _record(issue, actor, created, requested, previous)

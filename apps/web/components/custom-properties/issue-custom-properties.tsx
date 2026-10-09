@@ -24,7 +24,7 @@ import { useCustomProperties, useCustomPropertyValues } from "./use-custom-prope
 const NONE = "__none__";
 
 function errorMessage(error: unknown) {
-  return (error as { detail?: string } | undefined)?.detail;
+  return (error as { error?: string } | undefined)?.error;
 }
 
 function TextValueInput(props: {
