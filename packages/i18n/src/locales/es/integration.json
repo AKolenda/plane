@@ -96,7 +96,7 @@
     "no_mappings": "Aún no hay asignaciones de estado.",
     "mappings_saved": "Asignaciones de estado guardadas",
     "pull_requests": "Pull requests",
-    "link_syntax": "Vincula un pull request escribiendo [{identifier}-123] en su título o descripción.",
+    "link_syntax": "Vincule un pull request escribiendo [{identifier}-123] en su título o descripción.",
     "events": {
       "drafted": "Borrador abierto",
       "opened": "Abierto",

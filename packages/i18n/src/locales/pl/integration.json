@@ -82,7 +82,7 @@
     "open_state": "Stan po otwarciu",
     "closed_state": "Stan po zamknięciu",
     "add_repository": "Dodaj repozytorium",
-    "no_repositories": "Nie obserwujesz jeszcze żadnych repozytoriów.",
+    "no_repositories": "Brak obserwowanych repozytoriów.",
     "no_connections": "Nie połączono żadnego konta GitHub.",
     "no_available_repositories": "Nie znaleziono repozytoriów.",
     "search_repositories": "Szukaj repozytoriów",
@@ -96,7 +96,7 @@
     "no_mappings": "Brak mapowań stanów.",
     "mappings_saved": "Zapisano mapowania stanów",
     "pull_requests": "Pull requesty",
-    "link_syntax": "Powiąż pull request, wpisując [{identifier}-123] w jego tytule lub opisie.",
+    "link_syntax": "Pull request można powiązać, wpisując [{identifier}-123] w jego tytule lub opisie.",
     "events": {
       "drafted": "Otwarto szkic",
       "opened": "Otwarty",

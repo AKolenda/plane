@@ -96,7 +96,7 @@
     "no_mappings": "Nessuna mappatura degli stati.",
     "mappings_saved": "Mappature degli stati salvate",
     "pull_requests": "Pull request",
-    "link_syntax": "Collega una pull request scrivendo [{identifier}-123] nel titolo o nella descrizione.",
+    "link_syntax": "Colleghi una pull request scrivendo [{identifier}-123] nel titolo o nella descrizione.",
     "events": {
       "drafted": "Bozza aperta",
       "opened": "Aperta",

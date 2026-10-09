@@ -96,7 +96,7 @@
     "no_mappings": "Noch keine Statuszuordnungen.",
     "mappings_saved": "Statuszuordnungen gespeichert",
     "pull_requests": "Pull Requests",
-    "link_syntax": "Verknüpfe einen Pull Request, indem du [{identifier}-123] in Titel oder Beschreibung schreibst.",
+    "link_syntax": "Verknüpfen Sie einen Pull Request, indem Sie [{identifier}-123] in den Titel oder die Beschreibung schreiben.",
     "events": {
       "drafted": "Entwurf geöffnet",
       "opened": "Geöffnet",
