@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Custom properties",
+    "add": "Add property",
+    "edit": "Edit property",
+    "none": "No custom properties yet.",
+    "empty": "Empty",
+    "key": "Key",
+    "type": "Type",
+    "options": "Options",
+    "add_option": "Add option",
+    "delete_confirmation": "Delete {name}? Its value is removed from every work item.",
+    "types": {
+      "text": "Text",
+      "number": "Number",
+      "date": "Date",
+      "select": "Select",
+      "user": "User"
+    }
   }
 }

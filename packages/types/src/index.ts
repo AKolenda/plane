@@ -27,6 +27,7 @@ export * from "./home";
 export * from "./importer";
 export * from "./inbox";
 export * from "./instance";
+export * from "./custom-property";
 export * from "./github-integration";
 export * from "./integration";
 export * from "./issues";

@@ -31,6 +31,7 @@ export type TProjectSettingsTabs =
   | "labels"
   | "estimates"
   | "automations"
+  | "custom_properties"
   | "github";
 export type TProjectSettingsItem = {
   key: TProjectSettingsTabs;

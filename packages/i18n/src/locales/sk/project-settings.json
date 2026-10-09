@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Vlastné vlastnosti",
+    "add": "Pridať vlastnosť",
+    "edit": "Upraviť vlastnosť",
+    "none": "Zatiaľ žiadne vlastné vlastnosti.",
+    "empty": "Prázdne",
+    "key": "Kľúč",
+    "type": "Typ",
+    "options": "Možnosti",
+    "add_option": "Pridať možnosť",
+    "delete_confirmation": "Odstrániť {name}? Jej hodnota bude odstránená zo všetkých pracovných položiek.",
+    "types": {
+      "text": "Text",
+      "number": "Číslo",
+      "date": "Dátum",
+      "select": "Výber",
+      "user": "Používateľ"
+    }
   }
 }

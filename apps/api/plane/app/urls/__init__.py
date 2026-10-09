@@ -23,6 +23,7 @@ from .workspace import urlpatterns as workspace_urls
 from .timezone import urlpatterns as timezone_urls
 from .exporter import urlpatterns as exporter_urls
 from .github import urlpatterns as github_urls
+from plane.novapro.urls import urlpatterns as novapro_urls
 
 urlpatterns = [
     *analytic_urls,
@@ -46,4 +47,5 @@ urlpatterns = [
     *timezone_urls,
     *exporter_urls,
     *github_urls,
+    *novapro_urls,
 ]

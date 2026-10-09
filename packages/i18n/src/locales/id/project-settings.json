@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Properti kustom",
+    "add": "Tambah properti",
+    "edit": "Edit properti",
+    "none": "Belum ada properti kustom.",
+    "empty": "Kosong",
+    "key": "Kunci",
+    "type": "Jenis",
+    "options": "Opsi",
+    "add_option": "Tambah opsi",
+    "delete_confirmation": "Hapus {name}? Nilainya akan dihapus dari semua item kerja.",
+    "types": {
+      "text": "Teks",
+      "number": "Angka",
+      "date": "Tanggal",
+      "select": "Pilihan",
+      "user": "Pengguna"
+    }
   }
 }

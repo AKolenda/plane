@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "カスタムプロパティ",
+    "add": "プロパティを追加",
+    "edit": "プロパティを編集",
+    "none": "カスタムプロパティはまだありません。",
+    "empty": "空",
+    "key": "キー",
+    "type": "種類",
+    "options": "選択肢",
+    "add_option": "選択肢を追加",
+    "delete_confirmation": "{name} を削除しますか？すべての作業項目からその値が削除されます。",
+    "types": {
+      "text": "テキスト",
+      "number": "数値",
+      "date": "日付",
+      "select": "選択",
+      "user": "ユーザー"
+    }
   }
 }

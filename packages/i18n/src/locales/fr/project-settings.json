@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Propriétés personnalisées",
+    "add": "Ajouter une propriété",
+    "edit": "Modifier la propriété",
+    "none": "Aucune propriété personnalisée pour le moment.",
+    "empty": "Vide",
+    "key": "Clé",
+    "type": "Type",
+    "options": "Options",
+    "add_option": "Ajouter une option",
+    "delete_confirmation": "Supprimer {name} ? Sa valeur sera retirée de tous les éléments de travail.",
+    "types": {
+      "text": "Texte",
+      "number": "Nombre",
+      "date": "Date",
+      "select": "Sélection",
+      "user": "Utilisateur"
+    }
   }
 }

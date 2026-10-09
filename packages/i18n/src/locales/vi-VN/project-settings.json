@@ -522,5 +522,24 @@
         }
       }
     }
+  },
+  "custom_properties": {
+    "title": "Thuộc tính tùy chỉnh",
+    "add": "Thêm thuộc tính",
+    "edit": "Sửa thuộc tính",
+    "none": "Chưa có thuộc tính tùy chỉnh.",
+    "empty": "Trống",
+    "key": "Khóa",
+    "type": "Loại",
+    "options": "Tùy chọn",
+    "add_option": "Thêm tùy chọn",
+    "delete_confirmation": "Xóa {name}? Giá trị của nó sẽ bị xóa khỏi mọi mục công việc.",
+    "types": {
+      "text": "Văn bản",
+      "number": "Số",
+      "date": "Ngày",
+      "select": "Lựa chọn",
+      "user": "Người dùng"
+    }
   }
 }

@@ -342,6 +342,11 @@ export const coreRoutes: RouteConfigEntry[] = [
               ":workspaceSlug/settings/projects/:projectId/estimates",
               "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/estimates/page.tsx"
             ),
+            // Project custom properties
+            route(
+              ":workspaceSlug/settings/projects/:projectId/custom-properties",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/custom-properties/page.tsx"
+            ),
             // Project GitHub pull request automation
             route(
               ":workspaceSlug/settings/projects/:projectId/github",
