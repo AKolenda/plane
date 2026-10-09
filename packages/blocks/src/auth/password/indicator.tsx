@@ -16,10 +16,7 @@ export interface PasswordStrengthIndicatorProps {
   isFocused?: boolean;
 }
 
-export function PasswordStrengthIndicator({
-  password,
-  showCriteria = true,
-}: PasswordStrengthIndicatorProps) {
+export function PasswordStrengthIndicator({ password, showCriteria = true }: PasswordStrengthIndicatorProps) {
   const strength = getPasswordStrength(password);
   const criteria = getPasswordCriteria(password);
   const strengthInfo = getStrengthInfo(strength);
