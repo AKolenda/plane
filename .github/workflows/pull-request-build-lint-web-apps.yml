@@ -39,7 +39,7 @@ jobs:
           node-version-file: .node-version
 
       - name: Enable Corepack and pnpm
-        run: corepack enable pnpm
+        run: npm install -g corepack@latest && corepack enable pnpm
 
       - name: Get pnpm store directory
         shell: bash
@@ -84,7 +84,7 @@ jobs:
           node-version-file: .node-version
 
       - name: Enable Corepack and pnpm
-        run: corepack enable pnpm
+        run: npm install -g corepack@latest && corepack enable pnpm
 
       - name: Get pnpm store directory
         shell: bash
@@ -143,7 +143,7 @@ jobs:
           node-version-file: .node-version
 
       - name: Enable Corepack and pnpm
-        run: corepack enable pnpm
+        run: npm install -g corepack@latest && corepack enable pnpm
 
       - name: Get pnpm store directory
         shell: bash
@@ -186,7 +186,7 @@ jobs:
           node-version-file: .node-version
 
       - name: Enable Corepack and pnpm
-        run: corepack enable pnpm
+        run: npm install -g corepack@latest && corepack enable pnpm
 
       - name: Get pnpm store directory
         shell: bash
