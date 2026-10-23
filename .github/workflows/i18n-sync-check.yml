@@ -42,10 +42,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "22.22.0"
+          node-version: "26.12.1"
 
       - name: Enable Corepack and pnpm
-        run: corepack enable pnpm
+        run: npm install -g corepack@latest && corepack enable pnpm
 
       - name: Run sync check
         run: pnpm dlx tsx packages/i18n/scripts/sync-check.ts --ci
